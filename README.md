@@ -16,6 +16,12 @@
    - [Generics](#generics)
    - [Type any & Unknown](#type-any--unknown)
    - [Type Assertions](#type-assertions)
+   - [Type Casting](#type-casting)
+2. **Intermediate**
+   - [Lexical this](#lexical-this)
+   - [Readonly modifier](#readonly-modifier)
+   - [Union Types](#union-types)
+   - [Literal Types](#literal-types)
 
 ---
 
@@ -182,4 +188,83 @@ console.log(typeof yearString); // string
 
 const yearNumber = +yearString;
 console.log(typeof yearNumber); // number
+```
+
+---
+
+### Intermediate
+
+1. #### Lexical this
+###### Example 1
+```ts
+class Vehicle {
+  constructor(public name: string){}
+  drive() {
+    console.log('Vehicle ' + this.name + ' is driving');
+  }
+}
+
+let vehicle = new Vehicle('Truck');
+vehicle.drive(); // No, error
+let drive = vehicle.drive;
+drive(); // Error, this is undefined
+```
+###### Example 2
+```ts
+class Vehicle {
+  constructor(public name: string){}
+  // using arrow function preserves the called context
+  drive = () => {
+    console.log('Vehicle ' + this.name + ' is driving');
+  }
+}
+
+let vehicle = new Vehicle('Truck');
+vehicle.drive(); // No, error
+let drive = vehicle.drive;
+drive(); // No, error
+```
+
+2. #### Readonly modifier
+```ts
+class Vehicle {
+  constructor(public readonly name: string){}
+  // using arrow function preserves the called context
+  drive = () => {
+    console.log('Vehicle ' + this.name + ' is driving');
+  }
+}
+
+let vehicle = new Vehicle('Truck');
+vehicle.name = 'Bus'; // Error, property name is readonly
+```
+
+3. #### Union Types
+```ts
+// Accepts & Returns varied params string or string[]
+function reverse(data: string | string[]): string | string[] {
+  if (typeof data === 'string') {
+    return data.split('').reverse().join('');
+  }  
+  return data.reverse();
+}
+
+console.log(reverse('Hello')); // olleH
+console.log(reverse(['H', 'E', 'L', 'L', 'O'])); // ["O", "L", "L", "E", "H"]
+```
+
+4. #### Literal Types
+```ts
+let car: string;
+car = 'baleno';
+car = 'b@leno';
+
+let car: 'Baleno' | 'Nexon';
+car = 'Nexon'; // No, error
+car = 'Baleno'; // No, error
+car = 'B@leno' // Error
+
+type DiceValue = 1 | 2 | 3 | 4 | 5 | 6;
+let face: DiceValue = 2; // No, error
+face = 9; // Error
 ```
