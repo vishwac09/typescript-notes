@@ -1,5 +1,6 @@
 ### Typescript notes
 
+> Notes on typescript taken from the Udemy Course [TypeScript for Professionals](https://www.udemy.com/course/typescript-for-professionals) by **Basarat Ali Syed**
 ---
 
 #### <ins>Index</ins>
