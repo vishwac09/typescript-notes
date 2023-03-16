@@ -22,6 +22,12 @@
    - [Readonly modifier](#readonly-modifier)
    - [Union Types](#union-types)
    - [Literal Types](#literal-types)
+   - [Type Narrowing](#type-narrowing)
+   - [Class Parameter Properties](#class-parameter-properties)
+   - [Null vs Undefined](#null-vs-undefined)
+   - [Intersection Types](#intersection-types)
+   - [Optional Modifier](#optional-modifier)
+   - [Non-null Assertion Operator](#non-null-assertion-operator)
 
 ---
 
@@ -241,7 +247,7 @@ vehicle.name = 'Bus'; // Error, property name is readonly
 
 3. #### Union Types
 ```ts
-// Accepts & Returns varied params string or string[]
+// Accept & Return variables of different types string | string[]
 function reverse(data: string | string[]): string | string[] {
   if (typeof data === 'string') {
     return data.split('').reverse().join('');
@@ -267,4 +273,89 @@ car = 'B@leno' // Error
 type DiceValue = 1 | 2 | 3 | 4 | 5 | 6;
 let face: DiceValue = 2; // No, error
 face = 9; // Error
+```
+
+5. #### Type Narrowing
+```ts
+let age: number = 1;
+let checkIsNumber = typeof age === 'number';
+
+class Car {
+  constructor(public name: string){}
+  drive() {
+    console.log('Car ' + this.name + ' is driving.')
+  }
+}
+let car = new Car('Maruti');
+let isCarInstance = car instanceof Car;
+```
+
+
+6. #### Class Parameter Properties
+```ts
+class Car {
+  constructor(public name: string, private ownerAddress: string){}
+  drive() {
+    console.log('Car ' + this.name + ' is driving.')
+  }
+  showOwner() {
+    console.log('Owner is + ' . this.owner);
+  }
+}
+```
+
+7. #### Null vs Undefined
+```ts
+let isUndefined = undefined;
+let isNull = null;
+
+console.log(isUndefined === isNull) // false
+console.log(isUndefined == isNull) // true
+```
+
+8. #### Intersection Types
+```ts
+type Point2D = {
+  x: number,
+  y: number,
+}
+
+type Point3D = Point2D & {
+  z: number,
+}
+```
+
+9. #### Optional Modifier
+```ts
+type Person = {
+  name: string,
+  email: string,
+  phone?: string
+}
+
+const person1: Person = {
+  name: 'abc',
+  email: 'abc@google.com'
+}
+
+class Person {
+  public name: string;
+  public email: string;
+  public phone?: string;
+}
+```
+
+10. #### Non-null Assertion Operator
+```ts
+type Point = {
+  x: number;
+}
+
+let point: Point;
+function getPoint() {
+  point = { x: 10 };
+}
+
+getPoint();
+console.log(point!.x)
 ```
