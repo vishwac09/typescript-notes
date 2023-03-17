@@ -29,7 +29,11 @@
    - [Intersection Types](#intersection-types)
    - [Optional Modifier](#optional-modifier)
    - [Non-null Assertion Operator](#non-null-assertion-operator)
-
+3. **Advanced**
+  - [Implements Keyword](#implements-keyword)
+  - [Definitive Assignment operator](#definitive-assignment-operator)
+  - [User Defined Type Guards](#user-defined-type-guards)
+  - [Function Overloading](#function-overloading)
 ---
 
 ### Basics
@@ -359,4 +363,108 @@ function getPoint() {
 
 getPoint();
 console.log(point!.x)
+```
+
+---
+
+### Advanced
+
+1. #### Implements Keyword
+```ts
+type Vehicle = {
+  name: string;
+  drive(): void;
+}
+
+// Class honda implements Vehicle type/interface
+class Honda implements Vehicle {
+  constructor(public name: string) {}
+  drive() {
+    console.log('Vehicle ' + this.name + ' is driving');
+  }
+}
+
+let hondaCar = new Honda('Honda Civic');
+hondaCar.drive();
+```
+
+2. #### Definitive Assignment operator
+```ts
+// Exclamation mark denotes this variable will never be null.
+let point!: number;
+
+function initializePoint() {
+  point = 1;
+}
+
+initializePoint();
+
+console.log(point === null) // false
+```
+
+3. #### User Defined Type Guards
+```ts
+class Dog {
+  bark() {
+    console.log('Dog sound');
+  }
+}
+
+class Cat {
+  meow() {
+    console.log('Cat sound');
+  }
+}
+
+type Animal = Cat | Dog;
+
+// User defined type guard
+function isCat(animal: Animal): animal is Cat {
+  return animal instanceof Cat;
+}
+
+// User defined type guard
+function isDog(animal: Animal): animal is Dog {
+  return animal instanceof Dog;
+}
+
+function makeSound(animal: Animal) {
+  if (isCat(animal)) {
+    animal.meow();
+  }
+  if (isDog(animal)) {
+    animal.bark();
+  }
+}
+
+makeSound(new Dog());
+makeSound(new Cat());
+```
+
+4. #### Function Overloading
+```ts
+function reverse(str: string[]): string[];
+function reverse(str: string): string;
+function reverse(str: string | string[]): string | string[] {
+  if (typeof str === 'string') {
+    return str.split('').reverse().join('');
+  } else {
+    return str.reverse();
+  }
+}
+// type of hello == string
+const hello = reverse("hello");
+console.log(hello)
+```
+
+5. #### Call Signature
+```ts
+// Short hand syntax for a function declaration.
+type Add = (a: number, b: number) => number;
+
+const add: Add = (a: number, b: number): number => {
+  return a+b;
+}
+
+console.log(add(1, 4));
 ```
