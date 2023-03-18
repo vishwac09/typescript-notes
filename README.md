@@ -30,10 +30,15 @@
    - [Optional Modifier](#optional-modifier)
    - [Non-null Assertion Operator](#non-null-assertion-operator)
 3. **Advanced**
-  - [Implements Keyword](#implements-keyword)
-  - [Definitive Assignment operator](#definitive-assignment-operator)
-  - [User Defined Type Guards](#user-defined-type-guards)
-  - [Function Overloading](#function-overloading)
+     - [Implements Keyword](#implements-keyword)
+     - [Definitive Assignment operator](#definitive-assignment-operator)
+     - [User Defined Type Guards](#user-defined-type-guards)
+     - [Function Overloading](#function-overloading)
+     - [Abstract Classes](#abstract-classes)
+     - [Readonly Arrays & Tuples](#readonly-arrays--tuples)
+     - [Double Assertions](#double-assertions)
+     - [Const Assertion](#const-assertion)
+     - [Generic Constraints](#generic-constraints)
 ---
 
 ### Basics
@@ -467,4 +472,105 @@ const add: Add = (a: number, b: number): number => {
 }
 
 console.log(add(1, 4));
+```
+
+6. #### Abstract Classes
+```ts
+abstract class Vehicle {
+  constructor(public name: string){}
+  abstract drive(): void;
+}
+
+let vehicle = new Vehicle(); // Error, not possible.
+
+class Maruti extends Vehicle {
+  drive() {
+    console.log('Vehicle ' + this.name + ' is driving');
+  }
+}
+
+let maruti = new Maruti('Ritz');
+```
+
+7. #### Index Signature
+```ts
+type Person = {
+  name: string,
+}
+
+type PersonDictionary = {
+  [username: string]: Person,
+}
+
+// The index will be a string.
+const persons: PersonDictionary = {
+  abc: {name: 'ABC'}
+}
+```
+
+8. #### Readonly Arrays & Tuples
+```ts
+const readonlyArray: readonly number[] = [1, 2];
+console.log(readonlyArray); // [1, 2]
+readonlyArray[] = 3; // Error
+
+type readonlyArray_1 = ReadonlyArray<number>;
+type readonlyArray_2 = readonly number[];
+
+function reverseArray(input: readonlyArray_1) {
+  return input.slice().reverse();
+}
+
+console.log(reverseArray([1,2, 3, 4])); // [4, 3, 2, 1]
+
+```
+
+9. #### Double Assertions
+```ts
+type Point2D = {x:number, y:number}
+type Point3D = {x:number, y:number, z:number}
+type Person = {name: string, age: number}
+
+let point2D: Point2D = {x: 1, y: 2};
+let point3D: Point3D = {x: 1, y: 2, z: 5};
+let person: Person = {name: 'abc', age: 12};
+
+point2D = point3D; // No, Error
+point3D = point2D as Point3D; // Error avoided with asserting
+```
+
+10. #### Const Assertion
+```ts
+const person = {
+  name: 'abc',
+  age: 11
+}
+
+person.name = 'xyz'; // No, Error
+
+const vehicle = {
+  name: 'abc_xyz',
+  year: '2023'
+} as const; // Const assertion usage.
+
+vehicle.name = 'abc' // Error
+```
+
+11. #### this parameter
+```ts
+function sqrt(this: {num: number}): number {
+  return this.num * this.num; 
+};
+
+const getSquareRoot = {
+  num: 10,
+  sqrt: sqrt
+};
+
+console.log(getSquareRoot.sqrt());
+```
+
+12. #### Generic Constraints
+```ts
+
 ```
