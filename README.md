@@ -572,5 +572,24 @@ console.log(getSquareRoot.sqrt());
 
 12. #### Generic Constraints
 ```ts
+type Email = {
+  email: string;
+}
 
+type Person = {
+  name: string;
+  age: number;
+}
+
+function printUSerDetails<T extends Email>(user: T): void {
+  console.log("User Details");
+  console.log("Email - " + user.email);
+}
+
+let person: Person = {name: 'abc', age: 12};
+const userDetails = {
+  ...person,
+  email: 'abc@gmail.com'
+}
+printUSerDetails(userDetails);
 ```
