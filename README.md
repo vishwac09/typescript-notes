@@ -30,15 +30,23 @@
    - [Optional Modifier](#optional-modifier)
    - [Non-null Assertion Operator](#non-null-assertion-operator)
 3. **Advanced**
-     - [Implements Keyword](#implements-keyword)
-     - [Definitive Assignment operator](#definitive-assignment-operator)
-     - [User Defined Type Guards](#user-defined-type-guards)
-     - [Function Overloading](#function-overloading)
-     - [Abstract Classes](#abstract-classes)
-     - [Readonly Arrays & Tuples](#readonly-arrays--tuples)
-     - [Double Assertions](#double-assertions)
-     - [Const Assertion](#const-assertion)
-     - [Generic Constraints](#generic-constraints)
+   - [Implements Keyword](#implements-keyword)
+   - [Definitive Assignment operator](#definitive-assignment-operator)
+   - [User Defined Type Guards](#user-defined-type-guards)
+   - [Function Overloading](#function-overloading)
+   - [Abstract Classes](#abstract-classes)
+   - [Readonly Arrays & Tuples](#readonly-arrays--tuples)
+   - [Double Assertions](#double-assertions)
+   - [Const Assertion](#const-assertion)
+   - [Generic Constraints](#generic-constraints)
+4. **Expert (Type manipulation)**
+   - [Typeof type operator](#typeof-type-operator)
+   - [Lookup Types](#lookup-types)
+   - [Keyof type Operator](#keyof-type-operator)
+   - [Mapped Types](#mapped-types)
+   - [Mapped type modifiers](#mapped-type-modifiers)
+   - [Template literal type](#template-literal-type)
+   - [Conditional Types](#conditional-types)
 ---
 
 ### Basics
@@ -592,4 +600,200 @@ const userDetails = {
   email: 'abc@gmail.com'
 }
 printUSerDetails(userDetails);
+```
+
+---
+
+### Expert (Type manipulation)
+
+1. #### Typeof type operator
+```ts
+const Point = {
+  x: 10,
+  y: 10
+};
+
+// The new type created is similar to Point.
+type newPoint = typeof Point;
+
+// Short hand way of declaring variable
+const anotherPoint: typeof Point = {
+  x: 1,
+  y: 1
+}
+```
+
+2. #### Lookup Types
+```ts
+type Login200Response = {
+  token: {
+    user: {
+      email: string;
+      age: number;
+    }
+  },
+  session: {
+    exp: number;
+    created: number;
+    isValid: boolean;
+  }
+}
+
+// The return type of the function is a subset of type Login200Response
+const checkSession = (): Login200Response['session'] => {
+  return {
+    exp: Date.now(),
+    created: Date.now(),
+    isValid: false
+  };
+}
+```
+
+3. #### Keyof type Operator
+```ts
+type Person = {
+  name: string;
+  age: number;
+  gender: string;
+}
+
+const person1: Person = {
+  name: 'John',
+  age: 22,
+  gender: 'Male'
+};
+
+// Normal implementation
+function getObjectValues(obj: Person, index: keyof Person) {
+  return obj[index];
+}
+
+// Generic implementation
+function getObjectValuesGeneric<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+console.log(getObjectValues(person1, 'age')); // No, Error
+console.log(getObjectValues(person1, 'age1')); // Error
+
+console.log(getObjectValuesGeneric(person1, 'age')); // No, Error
+console.log(getObjectValuesGeneric(person1, 'age1')); // Error
+```
+
+4. #### Mapped Types
+```ts
+type Point = {
+  x: number;
+  y: number;
+  z: number;
+}
+
+// Example 1
+type ReadonlyType = {
+  readonly [Item in 'x' | 'y' | 'z']: number;
+}
+
+const point_1: ReadonlyType = {
+  x: 1,
+  y: 2,
+  z: 3
+};
+
+// Example 2
+type ReadonlyType_2 = {
+  readonly [Item in keyof Point]: number | Point[Item];
+}
+
+const point_2: ReadonlyType_2 = {
+  x: 1,
+  y: 2,
+  z: 3
+};
+
+console.log(point_2);
+
+// Example 3
+const point_3: Readonly<Point> = {
+  x: 1,
+  y: 2,
+  z: 3
+}
+
+console.log(point_3);
+```
+
+5. #### Mapped type modifiers
+```ts
+type Point = {
+  x?: number;
+  readonly y?: number;
+  z?: number;
+}
+
+// Example 1
+// Remove modifiers readonly & optional from above type by using '-' sign.
+type ReadonlyType_2 = {
+  -readonly [Item in keyof Point]-?: number | Point[Item];
+}
+
+// None of the members are optional or readonly now.
+const point_1: ReadonlyType_2 = {
+  x: 1,
+  y: 2,
+  z: 3
+};
+
+// Example 2
+class State<T> {
+  constructor(public current: T) {}
+  getState(): T {
+    return this.current;
+  }
+  // The Partial type modifier is provided by typescript, it makes all the members
+  // of the passed object or the variable itself as optional.
+  updateState(next: Partial<T>) {
+    this.current = {...this.current, ...next};
+  }
+}
+
+const s = new State({x: 1, y: 2});
+console.log(s.getState());
+s.updateState({y: 9});
+```
+
+6. #### Template literal type
+```ts
+let word: Hello;
+word = 'Hello'; // No, error
+word = 'Heelo'; // Error
+```
+
+7. #### Conditional Types
+```ts
+// Syntax : condition ? condition_is_True : condition_is_false, similar to javascript ternary operator.
+
+interface Animal {
+  move(): void;
+}
+
+interface Dog extends Animal {
+  bark(): void;
+}
+
+interface Cat {
+  meow(): void;
+}
+
+type Other = {
+  paws: 4;
+}
+
+type Puppy = Dog extends Animal ? Dog : 'other'; // Type inferred is Dog
+
+type PersianCat = Cat extends Animal ? Cat : Other; // Type inferred is 'other'.
+
+// As Persian cat type expects a property whose value is a number.
+const y: PersianCat = {
+  paws: 4
+}
 ```
